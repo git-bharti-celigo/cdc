@@ -23,8 +23,29 @@ public class DebeziumService {
     
     private static final Logger LOGGER = Logger.getLogger(DebeziumService.class);
     
-    @ConfigProperty(name = "debezium.enabled", defaultValue = "false")
+    @ConfigProperty(name = "debezium.enabled", defaultValue = "true")
     boolean debeziumEnabled;
+    
+    @ConfigProperty(name = "debezium.mongodb.connection.string", defaultValue = "mongodb://localhost:27017")
+    String mongoConnectionString;
+    
+    @ConfigProperty(name = "debezium.mongodb.database", defaultValue = "testdb")
+    String mongoDatabase;
+    
+    @ConfigProperty(name = "debezium.mongodb.collection", defaultValue = "testcol")
+    String mongoCollection;
+    
+    @ConfigProperty(name = "debezium.topic.prefix", defaultValue = "cdc-poc")
+    String topicPrefix;
+    
+    @ConfigProperty(name = "debezium.snapshot.mode", defaultValue = "no_data")
+    String snapshotMode;
+    
+    @ConfigProperty(name = "debezium.capture.mode", defaultValue = "change_streams")
+    String captureMode;
+    
+    @ConfigProperty(name = "debezium.tasks.max", defaultValue = "1")
+    String tasksMax;
     
     private DebeziumEngine<ChangeEvent<String, String>> engine;
     private ExecutorService executor;
@@ -74,13 +95,13 @@ public class DebeziumService {
         Properties props = new Properties();
         props.setProperty("name", "cdc-poc-engine");
         props.setProperty("connector.class", "io.debezium.connector.mongodb.MongoDbConnector");
-        props.setProperty("tasks.max", "1");
-        props.setProperty("mongodb.connection.string", "mongodb://localhost:27017");
-        props.setProperty("topic.prefix", "cdc-poc");
-        props.setProperty("database.include.list", "testdb");
-        props.setProperty("collection.include.list", "testdb.testcol");
-        props.setProperty("snapshot.mode", "no_data");
-        props.setProperty("capture.mode", "change_streams");
+        props.setProperty("tasks.max", tasksMax);
+        props.setProperty("mongodb.connection.string", mongoConnectionString);
+        props.setProperty("topic.prefix", topicPrefix);
+        props.setProperty("database.include.list", mongoDatabase);
+        props.setProperty("collection.include.list", mongoDatabase + "." + mongoCollection);
+        props.setProperty("snapshot.mode", snapshotMode);
+        props.setProperty("capture.mode", captureMode);
         return props;
     }
 
