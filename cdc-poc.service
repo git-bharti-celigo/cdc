@@ -1,0 +1,24 @@
+[Unit]
+Description=CDC POC Service
+After=network.target
+
+[Service]
+Type=simple
+User=cdc
+WorkingDirectory=/opt/cdc-poc
+ExecStart=/usr/bin/java -jar /opt/cdc-poc/quarkus-run.jar
+Restart=always
+RestartSec=10
+
+# Environment variables
+Environment=QUARKUS_HTTP_PORT=9123
+Environment=DEBEZIUM_ENABLED=false
+Environment=JAVA_OPTS="-Xmx512m -Xms256m"
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=cdc-poc
+
+[Install]
+WantedBy=multi-user.target
