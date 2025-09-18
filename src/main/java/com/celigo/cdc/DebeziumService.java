@@ -23,6 +23,11 @@ public class DebeziumService {
     
     private static final Logger LOGGER = Logger.getLogger(DebeziumService.class);
     
+    // Constructor to verify bean creation
+    public DebeziumService() {
+        LOGGER.info("DEBUG: DebeziumService bean created!");
+    }
+    
     @ConfigProperty(name = "debezium.enabled", defaultValue = "true")
     boolean debeziumEnabled;
     
@@ -52,12 +57,16 @@ public class DebeziumService {
 
     @PostConstruct
     void init() {
+        LOGGER.info("DEBUG: PostConstruct init() method called");
+        LOGGER.info("DEBUG: debeziumEnabled = " + debeziumEnabled);
+        
         if (!debeziumEnabled) {
             LOGGER.info("Debezium is disabled - set debezium.enabled=true to enable");
             return;
         }
         
-        LOGGER.info("Starting Debezium engine...");
+        LOGGER.info("DEBUG: Starting Debezium engine...");
+        LOGGER.info("DEBUG: MongoDB connection = " + mongoConnectionString);
         
         try {
             Properties props = createDebeziumProperties();
@@ -85,9 +94,9 @@ public class DebeziumService {
             executor = Executors.newSingleThreadExecutor();
             executor.submit(engine);
             
-            LOGGER.info("Debezium engine started successfully");
+            LOGGER.info("DEBUG: Debezium engine started successfully");
         } catch (Exception e) {
-            LOGGER.error("Failed to start Debezium engine", e);
+            LOGGER.error("DEBUG: Failed to start Debezium engine", e);
         }
     }
     
