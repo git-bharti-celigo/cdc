@@ -51,6 +51,12 @@
             <artifactId>quarkus-rest-jackson</artifactId>
         </dependency>
         
+        <!-- MicroProfile Config API -->
+        <dependency>
+            <groupId>org.eclipse.microprofile.config</groupId>
+            <artifactId>microprofile-config-api</artifactId>
+        </dependency>
+        
         
         <!-- Debezium Embedded Engine (minimal) -->
         <dependency>

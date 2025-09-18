@@ -59,6 +59,7 @@ public class DebeziumService {
     void init() {
         LOGGER.info("DEBUG: PostConstruct init() method called");
         LOGGER.info("DEBUG: debeziumEnabled = " + debeziumEnabled);
+        LOGGER.info("DEBUG: MongoDB connection = " + mongoConnectionString);
         
         if (!debeziumEnabled) {
             LOGGER.info("Debezium is disabled - set debezium.enabled=true to enable");
@@ -66,7 +67,6 @@ public class DebeziumService {
         }
         
         LOGGER.info("DEBUG: Starting Debezium engine...");
-        LOGGER.info("DEBUG: MongoDB connection = " + mongoConnectionString);
         
         try {
             Properties props = createDebeziumProperties();
