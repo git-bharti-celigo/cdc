@@ -57,19 +57,37 @@
             <artifactId>microprofile-config-api</artifactId>
         </dependency>
         
+        <!-- Quarkus MongoDB extension for proper MongoDB configuration -->
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-mongodb-client</artifactId>
+        </dependency>
         
-        <!-- Debezium Embedded Engine (minimal) -->
+        
+        <!-- Debezium dependencies (matches streaming-service versions) -->
         <dependency>
             <groupId>io.debezium</groupId>
             <artifactId>debezium-embedded</artifactId>
             <version>3.1.1.Final</version>
         </dependency>
-        
-        <!-- Debezium MongoDB Connector (lightweight choice) -->
         <dependency>
             <groupId>io.debezium</groupId>
             <artifactId>debezium-connector-mongodb</artifactId>
             <version>3.1.1.Final</version>
+        </dependency>
+        
+        <!-- Debezium API (required for proper initialization) -->
+        <dependency>
+            <groupId>io.debezium</groupId>
+            <artifactId>debezium-api</artifactId>
+            <version>3.1.1.Final</version>
+        </dependency>
+        
+        <!-- Kafka client (matches streaming-service version) -->
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka-clients</artifactId>
+            <version>3.9.0</version>
         </dependency>
         
         <!-- Test dependencies -->
@@ -96,6 +114,11 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <properties>
+                        <quarkus.package.type>uber-jar</quarkus.package.type>
+                    </properties>
+                </configuration>
             </plugin>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>

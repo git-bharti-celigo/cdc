@@ -19,21 +19,15 @@ public class DebeziumStarter {
     DebeziumService debeziumService;
     
     void onStart(@Observes StartupEvent ev) {
-        LOGGER.info("DEBUG: DebeziumStarter - Application started, DebeziumService should be initialized");
-        System.out.println("DEBUG: DebeziumStarter - Application started, DebeziumService should be initialized");
-        
-        // Explicitly call initialization in case @PostConstruct didn't run
         if (debeziumService != null) {
             LOGGER.info("DEBUG: DebeziumStarter - DebeziumService injection successful");
-            System.out.println("DEBUG: DebeziumStarter - DebeziumService injection successful");
+            System.out.println("DEBUG: DebeziumStarter - About to call debeziumService.init()");
             
-            // Force initialization
-            System.out.println("DEBUG: DebeziumStarter - Calling debeziumService.initializeDebezium()");
-            debeziumService.initializeDebezium();
-            System.out.println("DEBUG: DebeziumStarter - initializeDebezium() call completed");
+            debeziumService.init();
+            System.out.println("DEBUG: DebeziumStarter - init() call completed");
         } else {
             LOGGER.error("DEBUG: DebeziumStarter - DebeziumService injection FAILED!");
-            System.out.println("DEBUG: DebeziumStarter - DebeziumService injection FAILED!");
+            
         }
     }
 }
