@@ -59,6 +59,13 @@ public class DebeziumService {
 
     @PostConstruct
     void init() {
+        initializeDebezium();
+    }
+    
+    /**
+     * Public method to initialize Debezium (can be called manually if @PostConstruct fails)
+     */
+    public void initializeDebezium() {
         // Prevent multiple initialization (loop protection)
         if (initialized) {
             LOGGER.warn("DEBUG: DebeziumService already initialized - preventing loop");

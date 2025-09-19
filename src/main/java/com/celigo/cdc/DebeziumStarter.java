@@ -22,9 +22,18 @@ public class DebeziumStarter {
         LOGGER.info("DEBUG: DebeziumStarter - Application started, DebeziumService should be initialized");
         System.out.println("DEBUG: DebeziumStarter - Application started, DebeziumService should be initialized");
         
-        // The DebeziumService bean should already be created and @PostConstruct called
-        // This is just to ensure it gets initialized during startup
-        LOGGER.info("DEBUG: DebeziumStarter - DebeziumService injection successful");
-        System.out.println("DEBUG: DebeziumStarter - DebeziumService injection successful");
+        // Explicitly call initialization in case @PostConstruct didn't run
+        if (debeziumService != null) {
+            LOGGER.info("DEBUG: DebeziumStarter - DebeziumService injection successful");
+            System.out.println("DEBUG: DebeziumStarter - DebeziumService injection successful");
+            
+            // Force initialization
+            System.out.println("DEBUG: DebeziumStarter - Calling debeziumService.initializeDebezium()");
+            debeziumService.initializeDebezium();
+            System.out.println("DEBUG: DebeziumStarter - initializeDebezium() call completed");
+        } else {
+            LOGGER.error("DEBUG: DebeziumStarter - DebeziumService injection FAILED!");
+            System.out.println("DEBUG: DebeziumStarter - DebeziumService injection FAILED!");
+        }
     }
 }
