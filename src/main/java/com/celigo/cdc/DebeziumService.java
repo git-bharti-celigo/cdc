@@ -9,6 +9,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.logging.Logger;
 
+import java.io.IOException;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -54,15 +55,25 @@ public class DebeziumService {
     
     private DebeziumEngine<ChangeEvent<String, String>> engine;
     private ExecutorService executor;
+    private volatile boolean initialized = false;
 
     @PostConstruct
     void init() {
+        // Prevent multiple initialization (loop protection)
+        if (initialized) {
+            LOGGER.warn("DEBUG: DebeziumService already initialized - preventing loop");
+            return;
+        }
+        
         LOGGER.info("DEBUG: PostConstruct init() method called");
+        
         LOGGER.info("DEBUG: debeziumEnabled = " + debeziumEnabled);
+        
         LOGGER.info("DEBUG: MongoDB connection = " + mongoConnectionString);
         
         if (!debeziumEnabled) {
             LOGGER.info("Debezium is disabled - set debezium.enabled=true to enable");
+            initialized = true;  // Mark as initialized even when disabled
             return;
         }
         
@@ -95,8 +106,25 @@ public class DebeziumService {
             executor.submit(engine);
             
             LOGGER.info("DEBUG: Debezium engine started successfully");
+            initialized = true;  // Mark as successfully initialized
         } catch (Exception e) {
             LOGGER.error("DEBUG: Failed to start Debezium engine", e);
+            initialized = true;  // Mark as initialized even on failure to prevent retry loops
+            
+            // Clean up resources on failure to prevent resource leaks
+            if (executor != null && !executor.isShutdown()) {
+                LOGGER.info("DEBUG: Cleaning up executor after failure");
+                executor.shutdown();
+                executor = null;
+            }
+            if (engine != null) {
+                try {
+                    engine.close();
+                } catch (IOException ioException) {
+                    LOGGER.warn("DEBUG: Error closing engine after failure", ioException);
+                }
+                engine = null;
+            }
         }
     }
     
